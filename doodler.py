@@ -6,24 +6,28 @@ class Doodler(pygame.sprite.Sprite):
     right_image = pygame.image.load('data/img/doodler/right.png')
     left_image = pygame.image.load('data/img/doodler/left.png')
     VY0 = -15  # начальная скорость по оси Y при отскоке, px/s
-    AY = 20  # ускорение по оси Y, px/s²
+    AY = 25  # ускорение по оси Y, px/s²
     VX = 5  # постоянная скорость по оси X, px/s
 
     def __init__(self, *groups):
         super().__init__(*groups)
 
         self.image = self.right_image
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
-        self.cur_vy = 0  # текущая скорость по оси Y
+        self.cur_vy = self.VY0  # текущая скорость по оси Y
 
-    def update(self):
+        # Начальный вылет
+        self.rect.topleft = SCREEN_WIDTH / 2 - self.rect.width / 2, SCREEN_HEIGHT
+
+    def update(self, platform_group):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.step_left()
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.step_right()
 
-        if self.rect.bottom >= SCREEN_HEIGHT:
+        if pygame.sprite.spritecollideany(self, platform_group) and self.cur_vy >= 0:
             self.cur_vy = self.VY0
 
         self.cur_vy += self.AY / FPS
