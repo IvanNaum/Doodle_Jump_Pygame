@@ -1,24 +1,27 @@
 import pygame
 
-SIZE_WINDOW = 300, 500
 
+class App:
+    WIDTH = 400
+    HEIGHT = 650
 
-def main():
-    pygame.init()
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        pygame.display.set_caption('Doodle Jump')
+        icon = pygame.image.load('data/img/doodler/right.png')
+        pygame.display.set_icon(icon)
 
-    screen = pygame.display.set_mode(SIZE_WINDOW)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
-        # do someone
-        pygame.display.flip()
-
-    pygame.quit()
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            self.screen.fill('white')
+            pygame.display.flip()
+        pygame.quit()
 
 
 if __name__ == '__main__':
-    main()
+    App().run()
