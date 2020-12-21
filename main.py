@@ -1,13 +1,11 @@
 import pygame
+from constants import *
 
 
 class App:
-    WIDTH = 400
-    HEIGHT = 650
-
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Doodle Jump')
         icon = pygame.image.load('data/img/doodler/right.png')
         pygame.display.set_icon(icon)
