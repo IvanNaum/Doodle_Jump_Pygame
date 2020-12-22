@@ -27,21 +27,32 @@ class Doodler(pygame.sprite.Sprite):
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.step_right()
 
-        if pygame.sprite.spritecollideany(self, platform_group) and self.cur_vy >= 0:
+        platform = self.intersects_with(platform_group)
+        if platform and self.cur_vy >= 0:
             self.cur_vy = self.VY0
 
         self.cur_vy += self.AY / FPS
         self.rect.top += self.cur_vy
 
-        if self.rect.left >= SCREEN_WIDTH:
-            self.rect.left = 0
-        if self.rect.right <= 0:
-            self.rect.right = SCREEN_WIDTH
+    def intersects_with(self, *groups):
+        """
+        Проверяет пересечение self-спрайта с группами спрайтов по маске
+        :param groups: группы спрайтов
+        :return: pygame.sprite.Sprite или None
+        """
+        for group in groups:
+            for sprite in group:
+                if pygame.sprite.collide_mask(self, sprite):
+                    return sprite
 
     def step_right(self):
         self.rect.left += self.VX
+        if self.rect.left >= SCREEN_WIDTH:
+            self.rect.left = 0
         self.image = self.right_image
 
     def step_left(self):
         self.rect.left -= self.VX
+        if self.rect.right <= 0:
+            self.rect.right = SCREEN_WIDTH
         self.image = self.left_image

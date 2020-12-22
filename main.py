@@ -1,8 +1,6 @@
-import random
-
 import pygame
 
-from Platform import PlatformSprite
+from platforms import RegularPlatform
 from constants import *
 from doodler import Doodler
 
@@ -17,34 +15,17 @@ class App:
         pygame.display.set_icon(icon)
         # /----- настройка окна ----- #
 
+        self.background = pygame.transform.scale(
+            pygame.image.load('data/img/background.png'), (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+
     def run(self):
-        clock = pygame.time.Clock()
-        main_group = pygame.sprite.Group()
-        doodler_group = pygame.sprite.Group()
-        Doodler(doodler_group, main_group)
-
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            self.screen.fill('white')
-            doodler_group.update()
-            main_group.draw(self.screen)
-            pygame.display.flip()
-            clock.tick(FPS)
-
-        pygame.quit()
-
-    def run_test(self):
         clock = pygame.time.Clock()
         main_group = pygame.sprite.Group()
         doodler_group = pygame.sprite.Group()
         platform_group = pygame.sprite.Group()
         for i in range(10):
-            pl = PlatformSprite(platform_group, main_group)
-            pl.move((random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)))
+            RegularPlatform(platform_group, main_group)
         Doodler(doodler_group, main_group)
 
         running = True
@@ -53,7 +34,7 @@ class App:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self.screen.fill('white')
+            self.screen.blit(self.background, (0, 0))
             doodler_group.update(platform_group)
             main_group.draw(self.screen)
             pygame.display.flip()
@@ -64,4 +45,4 @@ class App:
 
 app = App()
 if __name__ == '__main__':
-    app.run_test()
+    app.run()
