@@ -31,3 +31,7 @@ class RegularPlatform(pygame.sprite.Sprite):
                 if pygame.sprite.collide_mask(self, sprite):
                     return True
         return False
+
+    def update(self):
+        if self.rect.centery > SCREEN_HEIGHT:
+            self.kill()

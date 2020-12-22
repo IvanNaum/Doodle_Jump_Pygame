@@ -3,6 +3,7 @@ import pygame
 from platforms import RegularPlatform
 from constants import *
 from doodler import Doodler
+from camera import Camera
 
 
 class App:
@@ -18,15 +19,20 @@ class App:
         self.background = pygame.transform.scale(
             pygame.image.load('data/img/background.png'), (SCREEN_WIDTH, SCREEN_HEIGHT)
         )
+        self.camera = Camera()
+        self.clock = pygame.time.Clock()
+
+        # ----- группы спрайтов ----- #
+        self.main_group = pygame.sprite.Group()
+        self.platform_group = pygame.sprite.Group()
+        self.doodler_group = pygame.sprite.Group()
+        # /----- группы спрайтов ----- #
+
+        self.doodler = Doodler(self.doodler_group, self.main_group)
 
     def run(self):
-        clock = pygame.time.Clock()
-        main_group = pygame.sprite.Group()
-        doodler_group = pygame.sprite.Group()
-        platform_group = pygame.sprite.Group()
         for i in range(10):
-            RegularPlatform(platform_group, main_group)
-        Doodler(doodler_group, main_group)
+            RegularPlatform(self.platform_group, self.main_group)
 
         running = True
         while running:
@@ -35,10 +41,14 @@ class App:
                     running = False
 
             self.screen.blit(self.background, (0, 0))
-            doodler_group.update(platform_group)
-            main_group.draw(self.screen)
+            self.doodler.update(self.platform_group)
+            self.platform_group.update()
+            self.main_group.draw(self.screen)
+            self.doodler_group.draw(self.screen)  # перемещаем дудлера на передний план
+            self.camera.update(self.doodler)
+            self.camera.apply(self.main_group)
             pygame.display.flip()
-            clock.tick(FPS)
+            self.clock.tick(FPS)
 
         pygame.quit()
 
