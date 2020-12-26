@@ -18,7 +18,7 @@ class Doodler(pygame.sprite.Sprite):
         self.cur_vy = self.VY0  # текущая скорость по оси Y
 
         # Начальный вылет
-        self.rect.topleft = SCREEN_WIDTH / 2 - self.rect.width / 2, SCREEN_HEIGHT
+        self.rect.topleft = SCREEN_HALF_WIDTH - self.rect.centerx, SCREEN_HEIGHT
 
     def update(self, platform_group):
         keys = pygame.key.get_pressed()
@@ -27,26 +27,33 @@ class Doodler(pygame.sprite.Sprite):
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.step_right()
 
-        if self.check_intersects(platform_group) and self.cur_vy >= 0:
-            self.cur_vy = self.VY0
+        if self.cur_vy >= 0:
+            sprite = self.collide_any(platform_group)
+            if sprite:
+                self.cur_vy = self.VY0
+                # небольшая регулировка положения дудлера,
+                # если он оказывается чуть ниже платформы
+                self.rect.bottom = sprite.rect.top
 
         self.cur_vy += self.AY / FPS
         self.rect.top += self.cur_vy
 
-    def check_intersects(self, *groups) -> bool:
+    def collide_any(self, *groups):
         """
-        Проверяет пересечение self-спрайта с группами спрайтов по маске
+        Проверяет пересечение дудлера с группами спрайтов
         :param groups: группы спрайтов
-        :return: True или False
+        :return: pygame.sprite.Sprite or None
         """
-        rect = pygame.Rect((self.rect.left + self.rect.width // 4,
-                            self.rect.top + self.rect.height // 6 * 5),
-                           (self.rect.width // 4 * 2, self.rect.height // 6 * 2))
+        # Проверяет пересечение дудлера с группами спрайтов без учёта носа
+        rect = pygame.Rect(
+            (self.rect.left + self.rect.width // 4,
+             self.rect.top + self.rect.height // 6 * 5),
+            (self.rect.width // 4 * 2, self.rect.height // 6 * 2)
+        )
         for group in groups:
             for sprite in group:
                 if rect.colliderect(sprite.rect):
-                    return True
-        return False
+                    return sprite  # возвращаем спрайт, с которым было пересечение
 
     def step_right(self):
         self.rect.left += self.VX

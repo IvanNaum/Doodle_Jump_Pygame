@@ -25,7 +25,7 @@ class Camera:
         :return: None
         """
         target_center_y = target.rect.centery
-        if target_center_y < SCREEN_HALF_HEIGHT:
-            self.dy = SCREEN_HALF_HEIGHT - target_center_y
+        if target_center_y < SCREEN_HEIGHT // 4:
+            self.dy = SCREEN_HEIGHT // 4 - target_center_y
         else:
             self.dy = 0
