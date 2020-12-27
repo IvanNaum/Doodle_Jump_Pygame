@@ -6,12 +6,9 @@ from constants import *
 class RegularPlatform(pygame.sprite.Sprite):
     image = pygame.image.load('data/img/platforms/regular_platform.png')
 
-    def __init__(self, *groups):
-        super().__init__()
-        self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
-        self.generate_position(*groups)
-        self.add(*groups)
+    def __init__(self, rect, *groups):
+        super().__init__(*groups)
+        self.rect = rect
 
     def generate_position(self, *groups):
         while True:

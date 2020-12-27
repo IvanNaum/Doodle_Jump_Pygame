@@ -5,20 +5,16 @@ from constants import *
 class Doodler(pygame.sprite.Sprite):
     right_image = pygame.image.load('data/img/doodler/right.png')
     left_image = pygame.image.load('data/img/doodler/left.png')
-    VY0 = -15  # начальная скорость по оси Y при отскоке, px/s
-    AY = 25  # ускорение по оси Y, px/s²
-    VX = 5  # постоянная скорость по оси X, px/s
 
     def __init__(self, *groups):
         super().__init__(*groups)
 
         self.image = self.right_image
-        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
-        self.cur_vy = self.VY0  # текущая скорость по оси Y
 
-        # Начальный вылет
-        self.rect.topleft = SCREEN_HALF_WIDTH - self.rect.centerx, SCREEN_HEIGHT
+        # текущая скорость по оси Y
+        self.cur_vy = JUMP_START_VELOCITY
+        self.rect.center = SCREEN_HALF_WIDTH, SCREEN_HEIGHT  # начальное положение
 
     def update(self, platform_group):
         keys = pygame.key.get_pressed()
@@ -30,12 +26,12 @@ class Doodler(pygame.sprite.Sprite):
         if self.cur_vy >= 0:
             sprite = self.collide_any(platform_group)
             if sprite:
-                self.cur_vy = self.VY0
+                self.cur_vy = JUMP_START_VELOCITY
                 # небольшая регулировка положения дудлера,
                 # если он оказывается чуть ниже платформы
                 self.rect.bottom = sprite.rect.top
 
-        self.cur_vy += self.AY / FPS
+        self.cur_vy += GRAVITATION_ACCELERATION / FPS
         self.rect.top += self.cur_vy
 
     def collide_any(self, *groups):
@@ -44,7 +40,7 @@ class Doodler(pygame.sprite.Sprite):
         :param groups: группы спрайтов
         :return: pygame.sprite.Sprite or None
         """
-        # Проверяет пересечение дудлера с группами спрайтов без учёта носа
+        # проверяет пересечение дудлера с группами спрайтов без учёта носа
         rect = pygame.Rect(
             (self.rect.left + self.rect.width // 4,
              self.rect.top + self.rect.height // 6 * 5),
@@ -56,13 +52,13 @@ class Doodler(pygame.sprite.Sprite):
                     return sprite  # возвращаем спрайт, с которым было пересечение
 
     def step_right(self):
-        self.rect.left += self.VX
+        self.rect.left += DOODLER_VELOCITY_X
         if self.rect.left >= SCREEN_WIDTH:
             self.rect.left = 0
         self.image = self.right_image
 
     def step_left(self):
-        self.rect.left -= self.VX
+        self.rect.left -= DOODLER_VELOCITY_X
         if self.rect.right <= 0:
             self.rect.right = SCREEN_WIDTH
         self.image = self.left_image

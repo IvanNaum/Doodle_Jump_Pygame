@@ -31,8 +31,18 @@ class App:
         self.doodler = Doodler(self.doodler_group, self.main_group)
 
     def run(self):
-        for i in range(10):
-            RegularPlatform(self.platform_group, self.main_group)
+        rect = pygame.Rect((0, 0), RegularPlatform.image.get_size())
+        rect.centerx = SCREEN_HALF_WIDTH
+        rect.bottom = SCREEN_HEIGHT - 50
+        RegularPlatform(
+            rect, self.platform_group, self.main_group
+        )
+
+        rect2 = rect.copy()
+        rect2.top -= JUMP_HEIGHT
+        RegularPlatform(
+            rect2, self.platform_group, self.main_group
+        )
 
         running = True
         while running:
