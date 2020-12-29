@@ -13,9 +13,7 @@ class Doodler(pygame.sprite.Sprite):
         self.image = self.right_image
         self.rect = self.image.get_rect()
 
-        # текущая скорость по оси Y
-        self.cur_vy = JUMP_START_VELOCITY
-        self.rect.center = SCREEN_HALF_WIDTH, SCREEN_HEIGHT  # начальное положение
+        self.reset()
 
         self.fall = False
 
@@ -36,6 +34,12 @@ class Doodler(pygame.sprite.Sprite):
 
         self.cur_vy += GRAVITATION_ACCELERATION / FPS
         self.rect.top += self.cur_vy
+
+    def reset(self):
+        # текущая скорость по оси Y
+        self.cur_vy = JUMP_START_VELOCITY
+        self.rect.center = SCREEN_HALF_WIDTH, SCREEN_HEIGHT  # начальное положение
+        self.fall = False
 
     def collide_any(self, *groups) -> pygame.sprite.Sprite:
         """
