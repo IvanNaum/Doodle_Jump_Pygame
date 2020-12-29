@@ -1,4 +1,5 @@
 import pygame
+
 from constants import *
 
 
@@ -16,7 +17,9 @@ class Doodler(pygame.sprite.Sprite):
         self.cur_vy = JUMP_START_VELOCITY
         self.rect.center = SCREEN_HALF_WIDTH, SCREEN_HEIGHT  # начальное положение
 
-    def update(self, platform_group):
+        self.fall = False
+
+    def update(self, platform_group) -> None:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.step_left()
@@ -26,15 +29,15 @@ class Doodler(pygame.sprite.Sprite):
         if self.cur_vy >= 0:
             sprite = self.collide_any(platform_group)
             if sprite:
-                self.cur_vy = JUMP_START_VELOCITY
                 # небольшая регулировка положения дудлера,
                 # если он оказывается чуть ниже платформы
                 self.rect.bottom = sprite.rect.top
+                self.jump()
 
         self.cur_vy += GRAVITATION_ACCELERATION / FPS
         self.rect.top += self.cur_vy
 
-    def collide_any(self, *groups):
+    def collide_any(self, *groups) -> pygame.sprite.Sprite:
         """
         Проверяет пересечение дудлера с группами спрайтов
         :param groups: группы спрайтов
@@ -51,13 +54,26 @@ class Doodler(pygame.sprite.Sprite):
                 if rect.colliderect(sprite.rect):
                     return sprite  # возвращаем спрайт, с которым было пересечение
 
-    def step_right(self):
+    def check_fall(self) -> bool:
+        if self.rect.bottom >= SCREEN_HEIGHT and self.cur_vy > 0 and not self.fall:
+            self.fall = True
+            return True
+        return False
+
+    def jump(self) -> None:
+        self.cur_vy = JUMP_START_VELOCITY
+        # загрузка музыки
+        pygame.mixer.music.load('data/sounds/jump.mp3')
+        # воспроизведение
+        pygame.mixer.music.play()
+
+    def step_right(self) -> None:
         self.rect.left += DOODLER_VELOCITY_X
         if self.rect.left >= SCREEN_WIDTH:
             self.rect.left = 0
         self.image = self.right_image
 
-    def step_left(self):
+    def step_left(self) -> None:
         self.rect.left -= DOODLER_VELOCITY_X
         if self.rect.right <= 0:
             self.rect.right = SCREEN_WIDTH

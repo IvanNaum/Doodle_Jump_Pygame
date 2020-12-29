@@ -1,5 +1,6 @@
-from constants import *
 import pygame
+
+from constants import *
 
 
 class Camera:
@@ -9,7 +10,7 @@ class Camera:
         """
         self.dy = 0
 
-    def apply(self, group: pygame.sprite.Group):
+    def apply(self, group: pygame.sprite.Group) -> None:
         """
         Сдвигает спрайты в группе
         :param group: pygame.sprite.Group
@@ -18,7 +19,7 @@ class Camera:
         for sprite in group:
             sprite.rect.y += self.dy
 
-    def update(self, target: pygame.sprite.Sprite):
+    def update(self, target: pygame.sprite.Sprite) -> None:
         """
         Позиционирует камеру на объекте target
         :param target: pygame.sprite.Sprite

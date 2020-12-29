@@ -1,9 +1,16 @@
+import sys
+
 import pygame
 
-from platforms import RegularPlatform
+from camera import Camera
 from constants import *
 from doodler import Doodler
-from camera import Camera
+from platforms import RegularPlatform
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
 
 
 class App:
@@ -50,6 +57,11 @@ class App:
                 if event.type == pygame.QUIT:
                     running = False
 
+            if self.doodler.check_fall():
+                pygame.mixer.music.load('data/sounds/fall_down.mp3')
+                pygame.mixer.music.play()
+                running = False
+
             self.screen.blit(self.background, (0, 0))
             self.doodler.update(self.platform_group)
             self.platform_group.update()
@@ -60,9 +72,9 @@ class App:
             pygame.display.flip()
             self.clock.tick(FPS)
 
-        pygame.quit()
+        terminate()
 
 
-app = App()
 if __name__ == '__main__':
+    app = App()
     app.run()
