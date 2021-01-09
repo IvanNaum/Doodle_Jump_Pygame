@@ -1,0 +1,1 @@
+from components.platforms.regular_platform.regular_platform import RegularPlatform
