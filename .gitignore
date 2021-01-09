@@ -1,6 +1,2 @@
 venv
 .idea
-**/__pycache__
-data/img/enemies
-data/img/stuff
-tests
