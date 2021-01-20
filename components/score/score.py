@@ -9,7 +9,7 @@ class Score(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.font = pygame.font.Font(
             str(dir_path / 'al_seana.ttf'),
-            36
+            30
         )
         self.value = 0
 
