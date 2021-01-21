@@ -1,16 +1,14 @@
 import sys
+
 import pygame
 
-from screen import screen
 from camera import Camera
-from constants import SCREEN_HEIGHT, SCREEN_HALF_WIDTH, FPS
-
 from components.backgrounds.regular_background import RegularBackground
 from components.doodler import Doodler
 from components.platforms.regular_platform import RegularPlatform
 from components.score import Score
-
-from views.end_view import end_view
+from constants import SCREEN_HEIGHT, SCREEN_HALF_WIDTH, FPS
+from screen import screen
 
 
 class GameView:
@@ -53,7 +51,6 @@ class GameView:
                     sys.exit()
 
             if self.doodler.fell():
-                toggle_to_end_view()
                 return
 
             self.generate_platforms()
@@ -93,10 +90,6 @@ class GameView:
             lambda sprite: sprite.rect.top in range(*y_limits),
             self.platform_group.sprites()
         )))
-
-
-def toggle_to_end_view():
-    end_view.run()
 
 
 game_view = GameView()

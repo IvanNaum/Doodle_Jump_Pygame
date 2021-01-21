@@ -1,18 +1,16 @@
 import sys
-import pygame
 
-from screen import screen
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAY_BUTTON_PRESSED, FPS
+import pygame
 
 from components.backgrounds.regular_background import RegularBackground
 from components.buttons.play_button import PlayButton
-from components.logo import Logo
-from components.enemies.ufo import Ufo
-from components.enemies.hole import Hole
-from components.platforms.regular_platform import RegularPlatform
 from components.doodler import Doodler
-
-from views.game_view import game_view
+from components.enemies.hole import Hole
+from components.enemies.ufo import Ufo
+from components.logo import Logo
+from components.platforms.regular_platform import RegularPlatform
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAY_BUTTON_PRESSED, FPS
+from screen import screen
 
 
 class StartView:
@@ -54,7 +52,6 @@ class StartView:
                     sys.exit()
 
                 if event.type == PLAY_BUTTON_PRESSED:
-                    toggle_to_game_view()
                     return
 
                 self.play_button.update(event)
@@ -65,10 +62,6 @@ class StartView:
 
             pygame.display.flip()
             self.clock.tick(FPS)
-
-
-def toggle_to_game_view():
-    game_view.run()
 
 
 start_view = StartView()

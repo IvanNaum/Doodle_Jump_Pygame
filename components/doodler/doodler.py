@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pygame
 
 from constants import (
@@ -78,4 +79,7 @@ class Doodler(pygame.sprite.Sprite):
         self.image = self.left_image
 
     def fell(self):
-        return self.rect.top >= SCREEN_HEIGHT
+        res = self.rect.top >= SCREEN_HEIGHT
+        if res:
+            self.reset()
+        return res
