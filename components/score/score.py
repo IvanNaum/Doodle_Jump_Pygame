@@ -26,3 +26,6 @@ class Score(pygame.sprite.Sprite):
         return self.font.render(
             str(self.value), True, pygame.color.Color('black')
         )
+
+    def get_value(self):
+        return self.value

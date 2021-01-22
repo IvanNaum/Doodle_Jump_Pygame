@@ -5,9 +5,11 @@ import pygame
 from camera import Camera
 from components.backgrounds.regular_background import RegularBackground
 from components.doodler import Doodler
+from components.mark.mark import Mark
 from components.platforms.regular_platform import RegularPlatform
 from components.score import Score
 from constants import SCREEN_HEIGHT, SCREEN_HALF_WIDTH, FPS
+from database import data_base
 from screen import screen
 
 
@@ -27,6 +29,7 @@ class GameView:
         self.topbar_group = pygame.sprite.Group()
         self.static_group = pygame.sprite.Group()
         self.dynamic_group = pygame.sprite.Group()
+        self.marks_group = pygame.sprite.Group()
         # /----- группы спрайтов ----- #
 
         # ----- компоненты ----- #
@@ -38,6 +41,9 @@ class GameView:
         self.platforms_density = 10
 
     def run(self):
+        # Заполнение группы меток
+        self.fill_marks_group()
+
         start_platform = RegularPlatform(
             self.platform_group, self.dynamic_group, self.base_group
         )
@@ -47,10 +53,12 @@ class GameView:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    data_base.add_score(self.score.get_value())
                     pygame.quit()
                     sys.exit()
 
             if self.doodler.fell():
+                data_base.add_score(self.score.get_value())
                 return
 
             self.generate_platforms()
@@ -60,6 +68,7 @@ class GameView:
 
             self.base_group.draw(screen)
             self.doodler_group.draw(screen)  # перемещаем дудлера на передний план
+            self.marks_group.draw(screen)
 
             # перемещаем элементы верхней панели на передний план
             self.topbar_group.draw(screen)
@@ -91,5 +100,14 @@ class GameView:
             self.platform_group.sprites()
         )))
 
+    def fill_marks_group(self):
+        for score in data_base.get_all_scores():
+            mark = Mark(self.dynamic_group, self.marks_group)
+            mark.set_position(score)
+
 
 game_view = GameView()
+
+# Test
+if __name__ == '__main__':
+    game_view.run()
