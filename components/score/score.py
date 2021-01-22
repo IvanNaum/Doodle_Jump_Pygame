@@ -29,3 +29,6 @@ class Score(pygame.sprite.Sprite):
 
     def get_value(self):
         return self.value
+
+    def reset(self):
+        self.value = 0

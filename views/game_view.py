@@ -58,6 +58,9 @@ class GameView:
                     sys.exit()
 
             if self.doodler.fell():
+                [i.kill() for i in self.platform_group]
+                [i.kill() for i in self.marks_group]
+                self.score.reset()
                 data_base.add_score(self.score.get_value())
                 return
 

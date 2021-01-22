@@ -21,6 +21,11 @@ class Doodler(pygame.sprite.Sprite):
         self.image = self.right_image
         self.rect = self.image.get_rect()
 
+        pygame.mixer.init()
+        pygame.mixer.set_reserved(0)
+        self.jump_sound = pygame.mixer.Sound(str(dir_path / 'sounds/jump.mp3'))
+        self.fall_down_sound = pygame.mixer.Sound(str(dir_path / 'sounds/fall_down.mp3'))
+
         self.reset()
 
     def update(self, platform_group, listen_key=True) -> None:
@@ -56,9 +61,9 @@ class Doodler(pygame.sprite.Sprite):
         # проверяет пересечение дудлера с группами спрайтов без учёта носа
         rect = pygame.Rect(
             self.rect.left + self.rect.width // 4,
-            self.rect.top + self.rect.height * 5 // 6,
-            self.rect.width * 2 // 4,
-            self.rect.height * 2 // 6
+            self.rect.top + self.rect.height // 6 * 5,
+            self.rect.width // 4 * 2,
+            self.rect.height // 6 * 2
         )
         for group in groups:
             for sprite in group:
@@ -67,6 +72,9 @@ class Doodler(pygame.sprite.Sprite):
 
     def jump(self):
         self.cur_vy = JUMP_START_VELOCITY
+
+        # Воспроизведение звука
+        pygame.mixer.Channel(1).play(self.jump_sound)
 
     def step_right(self) -> None:
         self.rect.left += DOODLER_VELOCITY_X
@@ -82,4 +90,6 @@ class Doodler(pygame.sprite.Sprite):
         res = self.rect.top >= SCREEN_HEIGHT
         if res:
             self.reset()
+            pygame.mixer.music.load(str(dir_path / 'sounds/fall_down.mp3'))
+            pygame.mixer.Channel(0).play(self.fall_down_sound)
         return res
