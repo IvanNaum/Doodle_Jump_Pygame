@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 
@@ -15,3 +17,5 @@ JUMP_HEIGHT = 230  # высота обычного прыжка дудлера, 
 # ----- константы событий ----- #
 PLAY_BUTTON_PRESSED = pygame.USEREVENT + 1
 # /----- константы событий ----- #
+
+OS_NAME = os.name

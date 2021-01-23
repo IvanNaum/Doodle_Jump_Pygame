@@ -4,7 +4,7 @@ import pygame
 
 from constants import (
     GRAVITATION_ACCELERATION, JUMP_START_VELOCITY, SCREEN_HALF_WIDTH, SCREEN_HEIGHT,
-    DOODLER_VELOCITY_X, SCREEN_WIDTH
+    DOODLER_VELOCITY_X, SCREEN_WIDTH, OS_NAME
 )
 
 dir_path = Path(__file__).parent.absolute()
@@ -21,10 +21,12 @@ class Doodler(pygame.sprite.Sprite):
         self.image = self.right_image
         self.rect = self.image.get_rect()
 
-        pygame.mixer.init()
-        pygame.mixer.set_reserved(0)
-        self.jump_sound = pygame.mixer.Sound(str(dir_path / 'sounds/jump.mp3'))
-        self.fall_down_sound = pygame.mixer.Sound(str(dir_path / 'sounds/fall_down.mp3'))
+        # Проверка операционной системы
+        if OS_NAME == 'nt':
+            pygame.mixer.init()
+            pygame.mixer.set_reserved(0)
+            self.jump_sound = pygame.mixer.Sound(str(dir_path / 'sounds/jump.mp3'))
+            self.fall_down_sound = pygame.mixer.Sound(str(dir_path / 'sounds/fall_down.mp3'))
 
         self.reset()
 
@@ -73,8 +75,10 @@ class Doodler(pygame.sprite.Sprite):
     def jump(self):
         self.cur_vy = JUMP_START_VELOCITY
 
-        # Воспроизведение звука
-        pygame.mixer.Channel(1).play(self.jump_sound)
+        # Проверка операционной системы
+        if OS_NAME == 'nt':
+            # Воспроизведение звука
+            pygame.mixer.Channel(1).play(self.jump_sound)
 
     def step_right(self) -> None:
         self.rect.left += DOODLER_VELOCITY_X
@@ -90,6 +94,9 @@ class Doodler(pygame.sprite.Sprite):
         res = self.rect.top >= SCREEN_HEIGHT
         if res:
             self.reset()
-            pygame.mixer.music.load(str(dir_path / 'sounds/fall_down.mp3'))
-            pygame.mixer.Channel(0).play(self.fall_down_sound)
+
+            # Проверка операционной системы
+            if OS_NAME == 'nt':
+                # Воспроизведение звука
+                pygame.mixer.Channel(0).play(self.fall_down_sound)
         return res
