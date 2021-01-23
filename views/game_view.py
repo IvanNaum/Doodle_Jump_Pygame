@@ -58,10 +58,8 @@ class GameView:
                     sys.exit()
 
             if self.doodler.fell():
-                [i.kill() for i in self.platform_group]
-                [i.kill() for i in self.marks_group]
-                self.score.reset()
                 data_base.add_score(self.score.get_value())
+                self.reset()
                 return
 
             self.generate_platforms()
@@ -107,6 +105,11 @@ class GameView:
         for score in data_base.get_all_scores():
             mark = Mark(self.dynamic_group, self.marks_group)
             mark.set_position(score)
+
+    def reset(self):
+        [i.kill() for i in self.platform_group]
+        [i.kill() for i in self.marks_group]
+        self.score.reset()
 
 
 game_view = GameView()
