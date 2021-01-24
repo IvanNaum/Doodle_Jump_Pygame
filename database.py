@@ -23,8 +23,12 @@ class DataBase(object):
             self.cursor = self.connect.cursor()
 
     def add_score(self, score):
-        self.cursor.execute('INSERT INTO score (score) VALUES (?)', (score,))
-        self.connect.commit()
+        marks = list(filter(lambda x: score - 10 < x < score + 10, self.get_all_scores()))
+        print(marks)
+        if not marks and score != 0:
+            print('ok')
+            self.cursor.execute('INSERT INTO score (score) VALUES (?)', (score,))
+            self.connect.commit()
 
     def get_max_score(self):
         return self.cursor.execute('SELECT max(score) FROM score').fetchone()[0]
